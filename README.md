@@ -9,3 +9,15 @@ Docker image for building Android with NDK, it uses
 * Android
 * NDK
 * GCloud
+
+## Build
+
+``docker build -t android-ndk .``
+
+## Tag
+
+``docker tag android-ndk  hannesa2/android-ndk:api28``
+
+## Publish
+
+``docker push hannesa2/android-ndk:api28``
