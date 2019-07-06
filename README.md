@@ -21,3 +21,5 @@ Docker image for building Android with NDK, it uses
 ## Publish
 
 ``docker push hannesa2/android-ndk:api28``
+
+maybe you need a ``docker login`` in advance
