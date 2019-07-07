@@ -5,6 +5,9 @@ ARG ANDROID_BUILD_TOOLS=28.0.3
 ARG ANDROID_SDK_TOOLS=4333796
 ARG ANDROID_NDK_TOOLS=r18b
 ARG SONAR_CLI=3.3.0.1492
+ARG EMULATOR_VERSION=24
+ARG EMULATOR_API=default
+ARG EMULATOR_ARCHITECTURE=armeabi-v7a
 
 ENV ANDROID_HOME=${PWD}/android-sdk-linux
 ENV ANDROID_NDK_HOME=${PWD}/android-ndk-${ANDROID_NDK_TOOLS}
@@ -40,6 +43,10 @@ RUN apt-get update \
  && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties \
  && mkdir ~/.android \
  && touch ~/.android/repositories.cfg \
- && yes | sdkmanager --licenses > /dev/null \
  && sdkmanager --update > /dev/null \
+ && yes | sdkmanager --licenses > /dev/null \
+ && echo "system-images= system-images;android-${EMULATOR_VERSION};${EMULATOR_API};${EMULATOR_ARCHITECTURE}" \
+ && sdkmanager "platform-tools" "emulator" "system-images;android-${EMULATOR_VERSION};${EMULATOR_API};${EMULATOR_ARCHITECTURE}" \
+ && yes | sdkmanager --licenses > /dev/null \
+ && echo no | avdmanager create avd -n test -k "system-images;android-${EMULATOR_VERSION};${EMULATOR_API};${EMULATOR_ARCHITECTURE}" \
  && sdkmanager "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
