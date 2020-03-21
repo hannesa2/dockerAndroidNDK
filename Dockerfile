@@ -15,7 +15,8 @@ ENV PATH=${PATH}:${ANDROID_NDK}
 ENV PATH=${PATH}:/root/gcloud/google-cloud-sdk/bin
 
 RUN apt-get update \
- && apt-get install wget gnupg openjdk-8-jdk unzip git curl python-pip bzip2 make --no-install-recommends -y \
+ && apt-get install wget apt-utils gnupg openjdk-8-jdk unzip git curl python-pip bzip2 make --no-install-recommends -y \
+ && export DEBIAN_FRONTEND="noninteractive" \
  && apt-get install procmail lsof --no-install-recommends -y \
  && rm -rf /var/cache/apt/archives \
  && update-ca-certificates \
