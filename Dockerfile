@@ -27,13 +27,13 @@ RUN apt-get update \
  && curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
  && rm -rf /tmp/gcl \
 # SDK
- && wget -q --show-progress -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
+ && wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
  && mkdir ${ANDROID_HOME} \
  && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
  && chmod +x ${ANDROID_HOME}/tools/android \
  && rm android-sdk.zip \
 # NDK
- && wget -q --show-progress -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
+ && wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
  && unzip -qo android-ndk.zip \
  && rm android-ndk.zip \
 # Config
