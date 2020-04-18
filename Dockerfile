@@ -23,17 +23,25 @@ RUN apt-get update \
  && pip install -U setuptools \
  && pip install -U wheel \
  && pip install -U crcmod \
+  # Set up KVM
+ && apt-get -y --no-install-recommends install cpu-checker bridge-utils libpulse0 libvirt-bin qemu-kvm virtinst ubuntu-vm-builder > /dev/null \
+ && apt-get install module-init-tools \
+ && modprobe kvm-intel \
+ && kvm-ok \
+ && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
+ # && adduser $USER libvirt \
+ # && adduser $USER kvm \
 # gcloud
  && curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
  && rm -rf /tmp/gcl \
 # SDK
- && wget -q --show-progress -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
+ && wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
  && mkdir ${ANDROID_HOME} \
  && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
  && chmod +x ${ANDROID_HOME}/tools/android \
  && rm android-sdk.zip \
 # NDK
- && wget -q --show-progress -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
+ && wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
  && unzip -qo android-ndk.zip \
  && rm android-ndk.zip \
 # Config
