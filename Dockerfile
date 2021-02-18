@@ -2,7 +2,8 @@ FROM ubuntu:20.04
 
 ARG ANDROID_TARGET_SDK=30
 ARG ANDROID_BUILD_TOOLS=30.0.3
-ARG ANDROID_SDK_TOOLS=4333796
+# https://developer.android.com/studio/index.html#command-tools
+ARG ANDROID_SDK_TOOLS=7302050
 ARG ANDROID_NDK_TOOLS=r22
 ARG SONAR_CLI=3.3.0.1492
 
@@ -38,7 +39,7 @@ RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install
  && rm -rf /tmp/gcl
 
 # SDK
-RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
+RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
  && mkdir ${ANDROID_HOME} \
  && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
  && chmod -R +x ${ANDROID_HOME} \
