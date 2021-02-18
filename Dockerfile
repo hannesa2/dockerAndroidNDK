@@ -15,14 +15,14 @@ ENV PATH=${PATH}:${ANDROID_NDK}
 ENV PATH=${PATH}:/root/gcloud/google-cloud-sdk/bin
 
 RUN apt-get update \
- && apt-get install wget apt-utils gnupg openjdk-8-jdk unzip git curl python-pip bzip2 make --no-install-recommends -y \
+ && apt-get install wget apt-utils gnupg openjdk-8-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
  && export DEBIAN_FRONTEND="noninteractive" \
  && apt-get install procmail lsof --no-install-recommends -y \
  && rm -rf /var/cache/apt/archives \
  && update-ca-certificates \
- && pip install -U setuptools \
- && pip install -U wheel \
- && pip install -U crcmod \
+ && pip3 install -U setuptools \
+ && pip3 install -U wheel \
+ && pip3 install -U crcmod \
   # Set up KVM
  && apt-get -y --no-install-recommends install bridge-utils libpulse0 libvirt-bin qemu-kvm virtinst ubuntu-vm-builder > /dev/null \
  && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
