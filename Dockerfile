@@ -27,7 +27,7 @@ RUN apt-get update \
  && pip3 install -U wheel \
  && pip3 install -U crcmod \
   # Set up KVM
- && apt-get -y --no-install-recommends install bridge-utils libpulse0 libvirt-bin qemu-kvm virtinst ubuntu-vm-builder > /dev/null \
+ && apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
  && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
  # && adduser $USER libvirt \
  # && adduser $USER kvm \
