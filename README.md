@@ -1,6 +1,6 @@
 # Android NDK Docker 
 
-[![supportLib](https://img.shields.io/badge/targetApi-29-green)](https://opensource.google.com/projects/material-components-android)
+[![supportLib](https://img.shields.io/badge/targetApi-30-green)](https://opensource.google.com/projects/material-components-android)
 [![supportLib](https://img.shields.io/badge/NDK-21-yellow.svg)](https://developer.android.com/ndk/downloads)
 
 Docker image for building Android with NDK, it uses
