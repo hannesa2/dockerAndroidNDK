@@ -35,9 +35,8 @@ RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm l
  && echo Install done
 
 # gcloud
-RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
- && rm -rf /tmp/gcl
-
+# RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
+# && rm -rf /tmp/gcl
 # SDK
 RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
  && mkdir ${ANDROID_HOME} \
