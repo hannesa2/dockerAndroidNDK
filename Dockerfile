@@ -18,7 +18,7 @@ ENV TZ=Europe/Madrid
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
- && apt-get install wget apt-utils gnupg openjdk-11-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
+ && apt-get install wget libarchive-tools apt-utils gnupg openjdk-11-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
  && export DEBIAN_FRONTEND="noninteractive" \
  && apt-get install procmail lsof --no-install-recommends -y \
  && rm -rf /var/cache/apt/archives \
@@ -40,6 +40,19 @@ RUN apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-b
 # RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
 # && rm -rf /tmp/gcl
 # SDK
+
+RUN mkdir -p ${ANDROID_HOME} \
+    && cd  ${ANDROID_HOME} \
+    && wget https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
+    && bsdtar --strip-components=1 -xvf commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
+    && rm commandlinetools-linux-6858069_latest.zip
+
+RUN find . -name "sdkmanager"
+
+RUN yes | bin/sdkmanager --licenses --sdk_root= ${ANDROID_HOME} \
+    && bin/sdkmanager --sdk_root= ${ANDROID_HOME} "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
+
+
 RUN echo "Install Android SDK" \
  && set -x && wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
  && mkdir ${ANDROID_HOME} \
@@ -49,7 +62,6 @@ RUN echo "Install Android SDK" \
  && mv ${ANDROID_HOME}/cmdline-tools ${ANDROID_HOME}/latest \
  && mkdir ${ANDROID_HOME}/cmdline-tools \
  && mv ${ANDROID_HOME}/latest ${ANDROID_HOME}/cmdline-tools/latest
-
 # NDK
 RUN  wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
  && unzip -qo android-ndk.zip \
@@ -63,9 +75,8 @@ RUN mkdir -p ~/.gradle \
 
 RUN keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -storepass android -keypass android -dname "CN=somewhere.in.munich, OU=ID, O=BMW, L=Bogenhausen, S=Hants, C=DE"
 
-## SDK
-RUN yes | sdkmanager --licenses > /dev/null \
- && sdkmanager --update > /dev/null
+#RUN yes | sdkmanager --licenses > /dev/null \
+# && sdkmanager --update > /dev/null
 
-RUN sdkmanager "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
+#RUN sdkmanager "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
 
