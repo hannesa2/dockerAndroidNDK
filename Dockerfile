@@ -27,18 +27,21 @@ RUN apt-get update \
  && pip3 install -U wheel \
  && pip3 install -U crcmod
 
- # Set up KVM
+# Set up KVM
 RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
- && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
+ && echo Install Java 11 and KVM done
+
+RUN apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
  # && adduser $USER libvirt \
  # && adduser $USER kvm \
- && echo Install done
+ && echo Install LVM done
 
 # gcloud
 # RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
 # && rm -rf /tmp/gcl
 # SDK
-RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
+RUN echo "Install Android SDK" \
+ && set -x && wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
  && mkdir ${ANDROID_HOME} \
  && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
  && chmod -R +x ${ANDROID_HOME} \
@@ -48,7 +51,7 @@ RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandl
  && mv ${ANDROID_HOME}/latest ${ANDROID_HOME}/cmdline-tools/latest
 
 # NDK
-RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
+RUN  wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
  && unzip -qo android-ndk.zip \
  && rm android-ndk.zip
 
@@ -56,8 +59,9 @@ RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-
 RUN mkdir -p ~/.gradle \
  && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties \
  && mkdir ~/.android \
- && touch ~/.android/repositories.cfg \
- && keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -storepass android -keypass android -dname "CN=somewhere.in.munich, OU=ID, O=BMW, L=Bogenhausen, S=Hants, C=DE"
+ && touch ~/.android/repositories.cfg
+
+RUN keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -storepass android -keypass android -dname "CN=somewhere.in.munich, OU=ID, O=BMW, L=Bogenhausen, S=Hants, C=DE"
 
 ## SDK
 RUN yes | sdkmanager --licenses > /dev/null \
