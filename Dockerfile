@@ -42,7 +42,7 @@ RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install
 RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
  && mkdir ${ANDROID_HOME} \
  && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
- && chmod +x ${ANDROID_HOME}/tools/android \
+ && chmod -R +x ${ANDROID_HOME} \
  && rm android-sdk.zip
 
 # NDK
