@@ -25,9 +25,10 @@ RUN apt-get update \
  && update-ca-certificates \
  && pip3 install -U setuptools \
  && pip3 install -U wheel \
- && pip3 install -U crcmod \
-  # Set up KVM
- && apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
+ && pip3 install -U crcmod
+
+ # Set up KVM
+RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
  && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
  # && adduser $USER libvirt \
  # && adduser $USER kvm \
@@ -35,23 +36,28 @@ RUN apt-get update \
 
 # gcloud
 RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
- && rm -rf /tmp/gcl \
+ && rm -rf /tmp/gcl
+
 # SDK
- && wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
+RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip \
  && mkdir ${ANDROID_HOME} \
  && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
  && chmod +x ${ANDROID_HOME}/tools/android \
- && rm android-sdk.zip \
+ && rm android-sdk.zip
+
 # NDK
- && wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
+RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
  && unzip -qo android-ndk.zip \
- && rm android-ndk.zip \
+ && rm android-ndk.zip
+
 # Config
- && mkdir -p ~/.gradle \
+RUN mkdir -p ~/.gradle \
  && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties \
  && mkdir ~/.android \
  && touch ~/.android/repositories.cfg \
- && keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -storepass android -keypass android -dname "CN=somewhere.in.munich, OU=ID, O=BMW, L=Bogenhausen, S=Hants, C=DE" \
- && yes | sdkmanager --licenses > /dev/null \
+ && keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -storepass android -keypass android -dname "CN=somewhere.in.munich, OU=ID, O=BMW, L=Bogenhausen, S=Hants, C=DE"
+
+RUN yes | sdkmanager --licenses > /dev/null \
  && sdkmanager --update > /dev/null \
  && sdkmanager "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
+
