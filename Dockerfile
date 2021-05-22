@@ -57,7 +57,9 @@ RUN mkdir -p ~/.gradle \
  && touch ~/.android/repositories.cfg \
  && keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -storepass android -keypass android -dname "CN=somewhere.in.munich, OU=ID, O=BMW, L=Bogenhausen, S=Hants, C=DE"
 
+## SDK
 RUN yes | sdkmanager --licenses > /dev/null \
- && sdkmanager --update > /dev/null \
- && sdkmanager "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
+ && sdkmanager --update > /dev/null
+
+RUN sdkmanager "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
 
