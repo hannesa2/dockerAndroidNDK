@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  push:
+    tags:
+      - '*'
+      -
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Find Tag
+      id: tagger
+      uses: jimschubert/query-tag-action@v2
+      with:
+        skip-unshallow: 'true'
+        commit-ish: HEAD
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag android-ndk:$(date +%s)
+    - name: Docker tag
+      run: docker tag android-ndk hannesa2/android-ndk:${{steps.tagger.outputs.tag}}
+    - name: Docker push
+      run: docker push hannesa2/android-ndk:${{steps.tagger.outputs.tag}}
