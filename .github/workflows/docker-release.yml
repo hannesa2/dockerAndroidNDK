@@ -23,6 +23,19 @@ jobs:
         commit-ish: HEAD
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag android-ndk:$(date +%s)
+    - name: Create Github release
+      run: |
+        PRE_RELEASE=""
+        if [[ ${{steps.tagger.outputs.tag}} == *"beta"* ]]; then
+          PRE_RELEASE="-p"
+        fi
+        if [[ ${{steps.tagger.outputs.tag}} == *"alpha"* ]]; then
+          PRE_RELEASE="-p"
+        fi
+        hub release create $PRE_RELEASE -m "${{steps.tagger.outputs.tag}}" "${{steps.tagger.outputs.tag}}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{steps.tagger.outputs.tag}}
     - name: Docker tag
       run: docker tag android-ndk hannesa2/android-ndk:${{steps.tagger.outputs.tag}}
     - name: Docker push
