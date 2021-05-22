@@ -18,7 +18,7 @@ ENV TZ=Europe/Madrid
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
- && apt-get install wget apt-utils gnupg openjdk-8-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
+ && apt-get install wget apt-utils gnupg openjdk-11-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
  && export DEBIAN_FRONTEND="noninteractive" \
  && apt-get install procmail lsof --no-install-recommends -y \
  && rm -rf /var/cache/apt/archives \
@@ -35,8 +35,8 @@ RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm l
  && echo Install done
 
 # gcloud
-RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
- && rm -rf /tmp/gcl
+#RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
+# && rm -rf /tmp/gcl
 
 # SDK
 RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
