@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Explain why this job ran
+        run: echo ${{ github.event_name }} ${{ github.ref }} event triggered this step.
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
