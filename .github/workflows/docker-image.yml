@@ -36,10 +36,18 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      # ${{ steps.meta.outputs.labels }} comes with "***/android-ndk:api30-java11-NDK21
+      # so we need it without ***
+      - name: Find Tag
+        id: tagger
+        uses: jimschubert/query-tag-action@v2
+        with:
+          skip-unshallow: 'true'
+          commit-ish: HEAD
       - name: Create Github release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          hub release create -m "${{ steps.meta.outputs.tags }}" "${{ steps.meta.outputs.tags }}"
+          hub release create -m "${{steps.tagger.outputs.tag}}" "${{steps.tagger.outputs.tag}}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.meta.outputs.tags }}
+          VERSION: ${{steps.tagger.outputs.tag}}
