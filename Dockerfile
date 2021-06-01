@@ -1,68 +1,67 @@
-FROM ubuntu:20.04
+FROM us-docker.pkg.dev/android-emulator-268719/images/30-google-x64:30.1.2
+MAINTAINER team@f-droid.org
 
-ARG ANDROID_TARGET_SDK=30
-ARG ANDROID_BUILD_TOOLS=30.0.3
-# https://developer.android.com/studio/index.html#command-tools
-ARG ANDROID_SDK_TOOLS=7302050
-ARG ANDROID_NDK_TOOLS=r21
-ARG SONAR_CLI=3.3.0.1492
+ENV LANG=C.UTF-8 \
+    DEBIAN_FRONTEND=noninteractive \
+    ANDROID_HOME=$ANDROID_SDK_ROOT \
+    GRADLE_USER_HOME=$HOME/.gradle \
+    GRADLE_OPTS=-Dorg.gradle.daemon=false
 
-ENV ANDROID_HOME=${PWD}/android-sdk-linux
-ENV ANDROID_NDK_HOME=${PWD}/android-ndk-${ANDROID_NDK_TOOLS}
-ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest
-ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin
-ENV PATH=${PATH}:${ANDROID_NDK}
-ENV PATH=${PATH}:/root/gcloud/google-cloud-sdk/bin
-ENV TZ=Europe/Madrid
+RUN echo Etc/UTC > /etc/timezone \
+	&& echo 'APT::Install-Recommends "0";' \
+		'APT::Install-Suggests "0";' \
+		'APT::Acquire::Retries "20";' \
+		'APT::Get::Assume-Yes "true";' \
+		'Dpkg::Use-Pty "0";' \
+		'quiet "1";' \
+        >> /etc/apt/apt.conf.d/99gitlab
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN printf "Package: androguard fdroidserver python3-asn1crypto python3-ruamel.yaml\nPin: release a=stretch-backports\nPin-Priority: 500\n" > /etc/apt/preferences.d/debian-stretch-backports.pref \
+	&& echo "deb http://deb.debian.org/debian/ stretch-backports main" > /etc/apt/sources.list.d/backports.list
 
-RUN apt-get update \
- && apt-get install wget apt-utils gnupg openjdk-11-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
- && export DEBIAN_FRONTEND="noninteractive" \
- && apt-get install procmail lsof --no-install-recommends -y \
- && rm -rf /var/cache/apt/archives \
- && update-ca-certificates \
- && pip3 install -U setuptools \
- && pip3 install -U wheel \
- && pip3 install -U crcmod
+RUN mkdir -p $ANDROID_SDK_ROOT/licenses/ \
+	&& printf "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_SDK_ROOT/licenses/android-sdk-license \
+	&& printf "\n84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_SDK_ROOT/licenses/android-sdk-preview-license \
+	&& printf "\n79120722343a6f314e0719f863036c702b0e6b2a\n84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_SDK_ROOT/licenses/android-sdk-preview-license-old
 
- # Set up KVM
-RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
- && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
- # && adduser $USER libvirt \
- # && adduser $USER kvm \
- && echo Install done
+# This installs fdroidserver and all its requirements for things like
+# fdroid nightly.  The source image uses stretch-slim, which strips
+# out the docs and man pages.  So do some hacks to ensure packages do
+# not trip up on missing things.  Also, add in a fake fdroid-icon.png
+# to make fdroid init happy.
+RUN \
+	printf "path-exclude=/usr/share/locale/*\npath-exclude=/usr/share/man/*\npath-exclude=/usr/share/doc/*\npath-include=/usr/share/doc/*/copyright\n" >/etc/dpkg/dpkg.cfg.d/01_nodoc \
+	&& mkdir -p /usr/share/man/man1 \
+	&& apt-get update \
+	&& apt-get -qy dist-upgrade \
+	&& apt-get -qy install --no-install-recommends \
+		androguard \
+		default-jdk-headless \
+		fdroidserver \
+		file \
+		gcc \
+		git \
+		gnupg \
+		libpulse0 \
+		make \
+		mesa-utils \
+		openssh-client \
+		pciutils \
+		python3-asn1crypto \
+		python3-qrcode \
+		python3-ruamel.yaml \
+		python3-setuptools \
+		zip \
+	&& apt-get -qy autoremove --purge \
+	&& apt-get clean \
+	&& mkdir -p /usr/share/doc/fdroidserver/examples \
+	&& touch /usr/share/doc/fdroidserver/examples/fdroid-icon.png \
+	&& touch /usr/share/doc/fdroidserver/examples/config.py \
+	&& sed -Ei 's,^(\s+.+)("archive_icon),\1"archive_description = '"\'archived old builds\'\\\\n"'"\n\1\2,g' \
+		/usr/lib/python3/dist-packages/fdroidserver/nightly.py \
+	&& rm -rf /var/lib/apt/lists/*
 
-# gcloud
-RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
- && rm -rf /tmp/gcl
-
-# SDK
-RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
- && mkdir ${ANDROID_HOME} \
- && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
- && chmod -R +x ${ANDROID_HOME} \
- && rm android-sdk.zip \
- && mv ${ANDROID_HOME}/cmdline-tools ${ANDROID_HOME}/latest \
- && mkdir ${ANDROID_HOME}/cmdline-tools \
- && mv ${ANDROID_HOME}/latest ${ANDROID_HOME}/cmdline-tools/latest
-
-# NDK
-RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
- && unzip -qo android-ndk.zip \
- && rm android-ndk.zip
-
-# Config
-RUN mkdir -p ~/.gradle \
- && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties \
- && mkdir ~/.android \
- && touch ~/.android/repositories.cfg \
- && keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -storepass android -keypass android -dname "CN=somewhere.in.munich, OU=ID, O=BMW, L=Bogenhausen, S=Hants, C=DE"
-
-## SDK
-RUN yes | sdkmanager --licenses > /dev/null \
- && sdkmanager --update > /dev/null
-
-RUN sdkmanager "platforms;android-${ANDROID_TARGET_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" platform-tools tools > /dev/null
+COPY start-emulator /usr/bin/
+COPY wait-for-emulator /usr/bin/
+COPY test /
 
