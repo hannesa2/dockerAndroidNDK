@@ -20,7 +20,7 @@ jobs:
         run: echo ${{ github.event_name }} ${{ github.ref }} event triggered this step.
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: hannesa2/android-ndk
       - name: Login to DockerHub
