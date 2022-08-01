@@ -4,7 +4,7 @@ ARG ANDROID_TARGET_SDK=32
 ARG ANDROID_BUILD_TOOLS=32.0.0
 # https://developer.android.com/studio/index.html#command-tools
 ARG ANDROID_SDK_TOOLS=8512546
-ARG ANDROID_NDK_TOOLS=r21
+ARG ANDROID_NDK_TOOLS=r24
 ARG SONAR_CLI=3.3.0.1492
 
 ENV ANDROID_HOME=${PWD}/android-sdk-linux
@@ -49,7 +49,7 @@ RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandl
  && mv ${ANDROID_HOME}/latest ${ANDROID_HOME}/cmdline-tools/latest
 
 # NDK
-RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux-x86_64.zip \
+RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux.zip \
  && unzip -qo android-ndk.zip \
  && rm android-ndk.zip
 
