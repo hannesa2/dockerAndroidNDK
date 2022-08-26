@@ -30,9 +30,11 @@ RUN apt-get update \
  # Set up KVM
 RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
  && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
- # && adduser $USER libvirt \
- # && adduser $USER kvm \
  && echo Install done
+
+RUN apt-get install -y cpu-checker
+RUN kvm-ok || echo "kvm can't be used"
+#RUN modprobe kvm-intel
 
 # gcloud
 RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts \
