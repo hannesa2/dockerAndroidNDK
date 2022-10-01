@@ -13,9 +13,10 @@ ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest
 ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin
 ENV PATH=${PATH}:${ANDROID_NDK}
 ENV PATH=${PATH}:/root/gcloud/google-cloud-sdk/bin
-ENV TZ=Europe/Madrid
+ENV TZ=Europe/Vienna
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
  && apt-get install wget apt-utils gnupg openjdk-11-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
