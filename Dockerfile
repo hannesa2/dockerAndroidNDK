@@ -7,7 +7,9 @@ ARG ANDROID_SDK_TOOLS=8512546
 ARG ANDROID_NDK_TOOLS=r24
 ARG SONAR_CLI=3.3.0.1492
 
-ENV ANDROID_HOME=${PWD}/android-sdk-linux
+ENV NDK_PLATFORM=linux
+ENV SDK_PLATFORM=linux
+ENV ANDROID_HOME=${PWD}/android-sdk
 ENV ANDROID_NDK_HOME=${PWD}/android-ndk-${ANDROID_NDK_TOOLS}
 ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest
 ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin
@@ -42,7 +44,7 @@ RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install
  && rm -rf /tmp/gcl
 
 # SDK
-RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip \
+RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandlinetools-${SDK_PLATFORM}-${ANDROID_SDK_TOOLS}_latest.zip \
  && mkdir ${ANDROID_HOME} \
  && unzip -qo android-sdk.zip -d ${ANDROID_HOME} \
  && chmod -R +x ${ANDROID_HOME} \
@@ -52,7 +54,7 @@ RUN wget -q -O android-sdk.zip https://dl.google.com/android/repository/commandl
  && mv ${ANDROID_HOME}/latest ${ANDROID_HOME}/cmdline-tools/latest
 
 # NDK
-RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-linux.zip \
+RUN wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_TOOLS}-${NDK_PLATFORM}.zip \
  && unzip -qo android-ndk.zip \
  && rm android-ndk.zip
 
