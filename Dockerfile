@@ -21,7 +21,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
- && apt-get install wget apt-utils gnupg openjdk-11-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
+ && apt-get install wget apt-utils gnupg openjdk-17-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
  && export DEBIAN_FRONTEND="noninteractive" \
  && apt-get install procmail lsof --no-install-recommends -y \
  && rm -rf /var/cache/apt/archives \
