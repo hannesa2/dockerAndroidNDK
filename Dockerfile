@@ -5,7 +5,6 @@ ARG ANDROID_BUILD_TOOLS=34.0.0
 # https://developer.android.com/studio/index.html#command-tools
 ARG ANDROID_SDK_TOOLS=9477386
 ARG ANDROID_NDK_TOOLS=r25
-ARG SONAR_CLI=3.3.0.1492
 
 ENV NDK_PLATFORM=linux
 ENV SDK_PLATFORM=linux
