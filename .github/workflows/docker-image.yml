@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Explain why this job ran
         run: echo ${{ github.event_name }} ${{ github.ref }} event triggered this step.
       - name: Docker meta
