@@ -20,17 +20,27 @@ ARG DEBIAN_FRONTEND=noninteractive
 #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
- && apt-get install wget apt-utils gnupg openjdk-17-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
- && export DEBIAN_FRONTEND="noninteractive" \
- && apt-get install procmail lsof --no-install-recommends -y \
+ && apt-get install wget apt-utils gnupg openjdk-17-jdk -y
+
+RUN apt-get install unzip git curl -y
+
+RUN apt-get install python3-pip -y
+RUN apt-get install bzip2 -y
+RUN apt-get install make -y
+
+RUN export DEBIAN_FRONTEND="noninteractive"
+
+RUN apt-get install python3-pip bzip2 make --no-install-recommends -y
+
+RUN apt-get install procmail lsof -y \
  && rm -rf /var/cache/apt/archives \
  && update-ca-certificates \
  && pip3 install -U setuptools \
  && pip3 install -U wheel \
- && pip3 install -U crcmod
+ && pip3 install -U crcmod \
 
  # Set up KVM
-RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
+RUN apt-get install -y bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager\
  && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
  && echo Install done
 
