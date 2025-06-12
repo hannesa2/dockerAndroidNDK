@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG ANDROID_TARGET_SDK=35
 ARG ANDROID_BUILD_TOOLS=35.0.0
@@ -20,18 +20,15 @@ ARG DEBIAN_FRONTEND=noninteractive
 #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
- && apt-get install wget apt-utils gnupg openjdk-17-jdk unzip git curl python3-pip bzip2 make --no-install-recommends -y \
+ && apt-get install wget apt-utils gnupg openjdk-17-jdk unzip git curl bzip2 make --no-install-recommends -y \
  && export DEBIAN_FRONTEND="noninteractive" \
  && apt-get install procmail lsof --no-install-recommends -y \
  && rm -rf /var/cache/apt/archives \
- && update-ca-certificates \
- && pip3 install -U setuptools \
- && pip3 install -U wheel \
- && pip3 install -U crcmod
+ && update-ca-certificates
 
  # Set up KVM
 RUN apt-get -y --no-install-recommends install bridge-utils libpulse0 qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager \
- && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
+ && apt-get install -y libxtst6 libnss3-dev libnspr4 libxss1 libatk-bridge2.0-0 libgtk-3-0 libgdk-pixbuf2.0-0 \
  && echo Install done
 
 RUN apt-get install -y cpu-checker
