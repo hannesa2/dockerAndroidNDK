@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Explain why this job ran
         run: echo ${{ github.event_name }} ${{ github.ref }} event triggered this step.
       - name: Docker meta
